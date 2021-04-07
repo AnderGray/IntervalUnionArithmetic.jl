@@ -1,11 +1,6 @@
-using IntervalArithmetic
-import Base: getindex, ∪
-import Base: +, -, *, /, min, max, ^, log, <, >, exp, sin, cos, tan
-import IntervalArithmetic: hull
-
 """
 
-    Multi-Intervals are unions of disjoint intervals. 
+    Interval unions sets of defined by unions of disjoint intervals. 
     This file includes constructors, arithmetic (including intervals and scalars)
     and complement functions
 
@@ -26,10 +21,8 @@ import IntervalArithmetic: hull
 """
 
 
-abstract type IntervalUnion{T} <: AbstractInterval{T} end
-
 ###
-#   Multi-Interval constructor. Consists of a vector of intervals
+#   IntervalUnion constructor. Consists of a vector of intervals
 ###
 struct IntervalU{T<:Real} <: IntervalUnion{T} 
     v :: Array{Interval{T}}
@@ -64,7 +57,7 @@ intervalM(x :: IntervalU, y :: IntervalU) = intervalU([x.v; y.v])
 getindex(x :: IntervalU, ind :: Integer) = getindex(x.v,ind)
 getindex(x :: IntervalU, ind :: Array{ <: Integer}) = getindex(x.v,ind)
 
-# Remove ∅ from Multi-Interval
+# Remove ∅ from IntervalUnion
 function remove_empties(x :: IntervalU)
     v = x.v
     Vnew = v[v .!= ∅]
@@ -96,12 +89,12 @@ function is_condensed(x :: IntervalU)
     return true
 end
 
-# Envolpe/hull. Keeps it as a multi interval
+# Envolpe/hull. Keeps it as a IntervalUnion
 env(x :: IntervalU) = IntervalU([hull(x.v)])
 hull(x :: IntervalU) = IntervalU([hull(x.v)])
 
 
-# Computes the complement of a Multi-Interval
+# Computes the complement of a IntervalUnion
 function complement(x :: IntervalU)
 
     v = sort(x.v)
@@ -120,7 +113,7 @@ end
 complement(x :: Interval) = complement(intervalU(x))
 
 ###
-#   Multi-Interval Arithmetic
+#   IntervalUnion Arithmetic
 ###
 
 for op in (:+, :-, :*, :/, :min, :max, :^, :log, :<, :>)
