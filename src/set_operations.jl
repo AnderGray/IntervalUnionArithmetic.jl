@@ -26,3 +26,33 @@ end
 complement(x :: Interval) = complement(intervalU(x))
 
 
+# bisect x at α
+function bisect( x :: IntervalU, α = 0)
+
+    v = deepcopy(x.v)
+
+    αIn = α .∈ v
+    these = findall(αIn .== 1)
+
+    if isempty(these); return x ; end
+
+    this = popat!(v, these[1])
+
+    β = (α - this.lo) /(this.hi - this.lo)
+
+    bs = bisect(this, β)
+
+    new = IntervalU(v ∪ bs[1] ∪ bs[2])
+    new = remove_empties(new)
+    sort!(new.v)
+    return new
+
+end
+
+function intersect(x :: IntervalU)
+
+end
+
+function set_diff(x :: IntervalU)
+
+end
