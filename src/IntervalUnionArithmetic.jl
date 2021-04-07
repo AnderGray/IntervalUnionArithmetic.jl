@@ -12,7 +12,7 @@ abstract type IntervalUnion{T} <: AbstractInterval{T} end
 
 export 
     IntervalUnion, IntervalU, intervalU, remove_empties, condense,
-    iscondensed, condense_strong, iscondensed_strong, env, hull, complement, left, right, bisect
+    iscondensed, condense_weak, iscondensed_weak, env, hull, complement, left, right, bisect
 
 include("interval_unions.jl")
 include("arithmetic.jl")

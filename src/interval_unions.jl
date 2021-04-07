@@ -64,8 +64,37 @@ function remove_empties(x :: IntervalU)
     return IntervalU(Vnew)
 end
 
-# Recursively envolpe intervals which intersect, except those which touch
+
+# Recursively envolpe intervals which intersect.
 function condense(x :: IntervalU)
+
+    if iscondensed(x); return x; end
+
+    v = sort(x.v)
+    v = unique(v)
+
+    Vnew = Interval{Float64}[]
+    for i =1:length(v)
+
+        intersects = intersect.(v[i],v )
+        these = findall( intersects .!= ∅)
+
+        push!(Vnew, hull(v[these]))
+    end
+    return condense( intervalU(Vnew) )
+end
+
+function iscondensed(x :: IntervalU)
+    v = sort(x.v)
+    for i=1:length(v)
+        intersects = findall( intersect.(v[i],v[1:end .!= i]) .!= ∅)
+        if !isempty(intersects); return false; end
+    end
+    return true
+end
+
+# Recursively envolpe intervals which intersect, except those which touch
+function condense_weak(x :: IntervalU)
 
     if iscondensed(x); return x; end
 
@@ -88,7 +117,7 @@ function condense(x :: IntervalU)
     return condense( intervalU(Vnew) )
 end
 
-function iscondensed(x :: IntervalU)
+function iscondensed_weak(x :: IntervalU)
     v = sort(x.v)
     for i=1:length(v)
         intersects = intersect.(v[i],v[1:end .!= i])
@@ -99,34 +128,6 @@ function iscondensed(x :: IntervalU)
         notEmptyOrThin = notempty .* (1 .- isItThin)
         
         if sum(notEmptyOrThin) != 0; return false; end
-    end
-    return true
-end
-
-# Recursively envolpe intervals which intersect.
-function condense_strong(x :: IntervalU)
-
-    if iscondensed_strong(x); return x; end
-
-    v = sort(x.v)
-    v = unique(v)
-
-    Vnew = Interval{Float64}[]
-    for i =1:length(v)
-
-        intersects = intersect.(v[i],v )
-        these = findall( intersects .!= ∅)
-
-        push!(Vnew, hull(v[these]))
-    end
-    return condense( intervalU(Vnew) )
-end
-
-function iscondensed_strong(x :: IntervalU)
-    v = sort(x.v)
-    for i=1:length(v)
-        intersects = findall( intersect.(v[i],v[1:end .!= i]) .!= ∅)
-        if !isempty(intersects); return false; end
     end
     return true
 end
