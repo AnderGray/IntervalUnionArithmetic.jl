@@ -5,7 +5,7 @@ using Reexport
 @reexport using IntervalArithmetic
 
 import Base: getindex, ∪
-import Base: +, -, *, /, min, max, ^, log, <, >, exp, sin, cos, tan
+import Base: +, -, *, /, min, max, ^, log, <, >, exp, sin, cos, tan, sqrt
 import IntervalArithmetic: hull
 
 abstract type IntervalUnion{T} <: AbstractInterval{T} end

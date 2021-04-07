@@ -131,6 +131,11 @@ for op in (:-, :sin, :cos, :tan, :exp, :log)
     @eval ($op)( x::IntervalU) = intervalU(broadcast($op, x.v))
 end
 
+function sqrt( x:: IntervalU)
+    us = sqrt.(x.v)
+    return intervalU([us; -us])
+end
+
 ###
 #   Utilities and show
 ###
