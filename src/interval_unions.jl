@@ -67,7 +67,7 @@ end
 # Recursively envolpe intervals which intersect, except those which touch
 function condense(x :: IntervalU)
 
-    if is_condensed(x); return x; end
+    if iscondensed(x); return x; end
 
     v = sort(x.v)
     v = unique(v)
@@ -106,7 +106,7 @@ end
 # Recursively envolpe intervals which intersect.
 function condense_strong(x :: IntervalU)
 
-    if is_condensed_strong(x); return x; end
+    if iscondensed_strong(x); return x; end
 
     v = sort(x.v)
     v = unique(v)
