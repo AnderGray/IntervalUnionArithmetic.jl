@@ -41,7 +41,7 @@ end
 ###
 function intervalU(x) 
     x = IntervalU(x)
-    x = removeEmpties(x)
+    x = remove_empties(x)
     return condense(x)
 end
 
@@ -65,7 +65,7 @@ getindex(x :: IntervalU, ind :: Integer) = getindex(x.v,ind)
 getindex(x :: IntervalU, ind :: Array{ <: Integer}) = getindex(x.v,ind)
 
 # Remove ∅ from Multi-Interval
-function removeEmpties(x :: IntervalU)
+function remove_empties(x :: IntervalU)
     v = x.v
     Vnew = v[v .!= ∅]
     return IntervalU(Vnew)
@@ -74,7 +74,7 @@ end
 # Envolpe intervals which intersect. Recursive condense!
 function condense(x :: IntervalU)
 
-    if isCondensed(x); return x; end
+    if is_condensed(x); return x; end
 
     v = sort(x.v)
     v = unique(v)
@@ -87,7 +87,7 @@ function condense(x :: IntervalU)
     return condense( intervalU(Vnew) )
 end
 
-function isCondensed(x :: IntervalU)
+function is_condensed(x :: IntervalU)
     v = sort(x.v)
     for i=1:length(v)
         intersects = findall( intersect.(v[i],v[1:end .!= i]) .!= ∅)
