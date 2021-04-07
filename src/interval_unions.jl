@@ -26,12 +26,12 @@ import IntervalArithmetic: hull
 """
 
 
-abstract type MultiInterval{T} <: AbstractInterval{T} end
+abstract type IntervalUnion{T} <: AbstractInterval{T} end
 
 ###
 #   Multi-Interval constructor. Consists of a vector of intervals
 ###
-struct IntervalM{T<:Real} <: MultiInterval{T} 
+struct IntervalU{T<:Real} <: IntervalUnion{T} 
     v :: Array{Interval{T}}
 end
 
@@ -39,40 +39,40 @@ end
 ###
 #   Outer constructors
 ###
-function intervalM(x) 
-    x = IntervalM(x)
+function intervalU(x) 
+    x = IntervalU(x)
     x = removeEmpties(x)
     return condense(x)
 end
 
-intervalM(x :: Interval) = IntervalM([x])
-∪(x :: Interval) = intervalM(x)
+intervalU(x :: Interval) = IntervalU([x])
+∪(x :: Interval) = intervalU(x)
 
-∪(x :: Interval, y :: Interval) = intervalM([x; y])
-∪(x :: Array{Interval{T}}) where T <:Real = intervalM(x)
+∪(x :: Interval, y :: Interval) = intervalU([x; y])
+∪(x :: Array{Interval{T}}) where T <:Real = intervalU(x)
 
-intervalM(x :: Interval, y :: IntervalM) = intervalM([x; y.v])
-∪(x :: Interval, y :: IntervalM) = intervalM(x,y)
+intervalU(x :: Interval, y :: IntervalU) = intervalU([x; y.v])
+∪(x :: Interval, y :: IntervalU) = intervalU(x,y)
 
-intervalM(x :: IntervalM, y :: Interval) = intervalM([x.v; y])
-∪(x :: IntervalM, y :: Interval) = intervalM(x,y)
+intervalU(x :: IntervalU, y :: Interval) = intervalU([x.v; y])
+∪(x :: IntervalU, y :: Interval) = intervalU(x,y)
 
-intervalM(x :: IntervalM, y :: IntervalM) = intervalM([x.v; y.v])
-∪(x :: IntervalM, y :: IntervalM) = intervalM(x,y)
+intervalM(x :: IntervalU, y :: IntervalU) = intervalU([x.v; y.v])
+∪(x :: IntervalU, y :: IntervalU) = intervalU(x,y)
 
 # MultiInterval can act like a vector
-getindex(x :: IntervalM, ind :: Integer) = getindex(x.v,ind)
-getindex(x :: IntervalM, ind :: Array{ <: Integer}) = getindex(x.v,ind)
+getindex(x :: IntervalU, ind :: Integer) = getindex(x.v,ind)
+getindex(x :: IntervalU, ind :: Array{ <: Integer}) = getindex(x.v,ind)
 
 # Remove ∅ from Multi-Interval
-function removeEmpties(x :: IntervalM)
+function removeEmpties(x :: IntervalU)
     v = x.v
     Vnew = v[v .!= ∅]
-    return IntervalM(Vnew)
+    return IntervalU(Vnew)
 end
 
 # Envolpe intervals which intersect. Recursive condense!
-function condense(x :: IntervalM)
+function condense(x :: IntervalU)
 
     if isCondensed(x); return x; end
 
@@ -84,10 +84,10 @@ function condense(x :: IntervalM)
         these = findall( intersect.(v[i],v ) .!= ∅)
         push!(Vnew, hull(v[these]))
     end
-    return condense( intervalM(Vnew) )
+    return condense( intervalU(Vnew) )
 end
 
-function isCondensed(x :: IntervalM)
+function isCondensed(x :: IntervalU)
     v = sort(x.v)
     for i=1:length(v)
         intersects = findall( intersect.(v[i],v[1:end .!= i]) .!= ∅)
@@ -97,12 +97,12 @@ function isCondensed(x :: IntervalM)
 end
 
 # Envolpe/hull. Keeps it as a multi interval
-env(x :: IntervalM) = IntervalM([hull(x.v)])
-hull(x :: IntervalM) = IntervalM([hull(x.v)])
+env(x :: IntervalU) = IntervalU([hull(x.v)])
+hull(x :: IntervalU) = IntervalU([hull(x.v)])
 
 
 # Computes the complement of a Multi-Interval
-function complement(x :: IntervalM)
+function complement(x :: IntervalU)
 
     v = sort(x.v)
     vLo = left.(v)
@@ -113,28 +113,28 @@ function complement(x :: IntervalM)
 
     complements = interval.(vHi,vLo)
 
-    return intervalM(complements)
+    return intervalU(complements)
 end
 
-complement(x :: Interval) = complement(intervalM(x))
+complement(x :: Interval) = complement(intervalU(x))
 
 ###
 #   Multi-Interval Arithmetic
 ###
 
 for op in (:+, :-, :*, :/, :min, :max, :^, :log, :<, :>)
-    @eval ($op)( x::IntervalM, y::IntervalM) = intervalM([$op(xv, yv) for xv in x.v, yv in y.v][:])
+    @eval ($op)( x::IntervalU, y::IntervalU) = intervalU([$op(xv, yv) for xv in x.v, yv in y.v][:])
 
-    @eval ($op)( x::IntervalM, y::Interval) = intervalM(broadcast($op, x.v, y))
-    @eval ($op)( x::Interval, y::IntervalM) = intervalM(broadcast($op, y, x.v))
+    @eval ($op)( x::IntervalU, y::Interval) = intervalU(broadcast($op, x.v, y))
+    @eval ($op)( x::Interval, y::IntervalU) = intervalU(broadcast($op, y, x.v))
 
-    @eval ($op)( x::IntervalM, n::Real) = intervalM(broadcast($op, x.v, n))
-    @eval ($op)( n::Real, x::IntervalM) = intervalM(broadcast($op, n, x.v))
+    @eval ($op)( x::IntervalU, n::Real) = intervalU(broadcast($op, x.v, n))
+    @eval ($op)( n::Real, x::IntervalU) = intervalU(broadcast($op, n, x.v))
     
 end
 
 for op in (:-, :sin, :cos, :tan, :exp, :log)
-    @eval ($op)( x::IntervalM) = intervalM(broadcast($op, x.v))
+    @eval ($op)( x::IntervalU) = intervalU(broadcast($op, x.v))
 end
 
 ###
@@ -144,10 +144,10 @@ end
 left(x :: Interval) = x.lo
 right(x :: Interval) = x.hi
 
-left(x :: IntervalM) = left.(x.v)
-right(x :: IntervalM) = right.(x.v)
+left(x :: IntervalU) = left.(x.v)
+right(x :: IntervalU) = right.(x.v)
 
-function Base.show(io::IO, this::IntervalM)
+function Base.show(io::IO, this::IntervalU)
     v = sort(this.v)
     print(io, join(v, " ∪ "));
 end
