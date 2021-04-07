@@ -108,8 +108,9 @@ function complement(x :: IntervalU)
     vLo = left.(v)
     vHi = right.(v)
 
-    pushfirst!(vHi, -∞)
-    push!(vLo, ∞)
+    vLo[1] == -∞ ? popfirst!(vLo) : pushfirst!(vHi, -∞)
+    vHi[end] == ∞ ? pop!(vHi) : push!(vLo, ∞)
+    
 
     complements = interval.(vHi,vLo)
 
