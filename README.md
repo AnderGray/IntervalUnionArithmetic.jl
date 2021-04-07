@@ -1,12 +1,18 @@
 # IntervalUnionArithmetic.jl
 
-An extension to [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl) with interval unions.
+An extension to [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl) with interval unions. Interval unions sets of defined by unions of disjoint intervals.
 
-Interval unions sets of defined by unions of disjoint intervals.
+This package includes constructors, arithmetic (including with intervals and scalars) and complement functions.
 
-This package includes constructors, arithmetic (including with intervals and scalars)
-and complement functions.
-  
+## Installation
+
+This is not yet a registered julia package. However this package may be installed using the Julia package manager:
+
+```Julia
+julia> ]
+pkg> add https://github.com/AnderGray/IntervalUnionArithmetic.jl.git
+```
+
 ## Example
   
   ```Julia
