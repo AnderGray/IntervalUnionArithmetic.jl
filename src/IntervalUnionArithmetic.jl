@@ -15,5 +15,8 @@ export
     is_condensed, env, hull, complement, left, right
 
 include("interval_unions.jl")
+include("arithmetic.jl")
+include("utilities.jl")
+include("set_operations.jl")
 
 end # module
