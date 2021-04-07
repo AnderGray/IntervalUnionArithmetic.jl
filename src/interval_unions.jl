@@ -64,7 +64,7 @@ function remove_empties(x :: IntervalU)
     return IntervalU(Vnew)
 end
 
-# Recursively envolpe intervals which intersect.
+# Recursively envolpe intervals which intersect, except those which touch
 function condense(x :: IntervalU)
 
     if is_condensed(x); return x; end
@@ -74,13 +74,55 @@ function condense(x :: IntervalU)
 
     Vnew = Interval{Float64}[]
     for i =1:length(v)
-        these = findall( intersect.(v[i],v ) .!= ∅)
+
+        intersects = intersect.(v[i],v )
+
+        notempty = intersects .!= ∅
+        isItThin = isthin.(intersects)    # Don't hull intervals which touch
+
+        notEmptyOrThin = notempty .* (1 .- isItThin)
+        them = findall(notEmptyOrThin .== 1)
+
+        push!(Vnew, hull(v[them]))
+    end
+    return condense( intervalU(Vnew) )
+end
+
+function iscondensed(x :: IntervalU)
+    v = sort(x.v)
+    for i=1:length(v)
+        intersects = intersect.(v[i],v[1:end .!= i])
+
+        notempty = intersects .!= ∅
+        isItThin =  isthin.(intersects)
+
+        notEmptyOrThin = notempty .* (1 .- isItThin)
+        
+        if sum(notEmptyOrThin) != 0; return false; end
+    end
+    return true
+end
+
+# Recursively envolpe intervals which intersect.
+function condense_strong(x :: IntervalU)
+
+    if is_condensed_strong(x); return x; end
+
+    v = sort(x.v)
+    v = unique(v)
+
+    Vnew = Interval{Float64}[]
+    for i =1:length(v)
+
+        intersects = intersect.(v[i],v )
+        these = findall( intersects .!= ∅)
+
         push!(Vnew, hull(v[these]))
     end
     return condense( intervalU(Vnew) )
 end
 
-function is_condensed(x :: IntervalU)
+function iscondensed_strong(x :: IntervalU)
     v = sort(x.v)
     for i=1:length(v)
         intersects = findall( intersect.(v[i],v[1:end .!= i]) .!= ∅)
