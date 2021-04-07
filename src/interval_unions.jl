@@ -71,7 +71,7 @@ function remove_empties(x :: IntervalU)
     return IntervalU(Vnew)
 end
 
-# Envolpe intervals which intersect. Recursive condense!
+# Recursively envolpe intervals which intersect.
 function condense(x :: IntervalU)
 
     if is_condensed(x); return x; end
