@@ -74,3 +74,34 @@ end
 \(x :: IntervalU, y :: IntervalU) = setdiff(x, y)
 \(x :: Interval, y :: IntervalU) = setdiff(intervalU(x), y)
 \(x :: IntervalU, y :: Interval) = setdiff(x, intervalU(y))
+
+function ⊂(x :: IntervalU, y :: IntervalU)
+    issubs = [xv .⊂ y.v for xv in x.v]
+    return all(any.(issubs))
+end
+
+function ⊂(x :: Interval, y :: IntervalU)
+    if length(y.v) == 1; return x ⊂ y; end
+    issubs = x .⊆ y.v
+    return any(issubs)
+end
+
+function ⊂( x::IntervalU, y :: Interval) 
+    issubs = x.v .⊂ y
+    return all(issubs)
+end
+
+function ⊆(x :: IntervalU, y :: IntervalU)
+    issubs = [xv .⊆ y.v for xv in x.v]
+    return all(any.(issubs))
+end
+
+function ⊆(x :: Interval, y :: IntervalU)
+    issubs = x .⊆ y.v
+    return any(issubs)
+end
+
+function ⊆( x::IntervalU, y :: Interval) 
+    issubs = x.v .⊆ y
+    return all(issubs)
+end
