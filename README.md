@@ -67,6 +67,9 @@ julia> a \ b                 # Set difference
     
 julia> bisect(a,0.5)         # Cut at a = 0.5
     [0, 0.5] ∪ [0.5, 1] ∪ [2, 3]
+    
+julia> a ⊂ interval(0,3)     # Subset
+    true
   ```
 ## Bibiography
 
