@@ -31,6 +31,31 @@ julia> complement(c)
     [-∞, 0] ∪ [10, 12] ∪ [20, ∞]
   ```
   
+### Division and sqrt
+
+  ```Julia
+julia> x = interval(2,5); 
+julia> y = interval(-1,1);
+julia> x / y                # Standard interval arithmetic
+    [-∞, ∞]
+    
+julia> x1 = intervalU(x)
+    [2, 5]
+    
+julia> y1 = intervalU(y)
+    [-1, 1]
+    
+julia> x1 / y1              # Does x1 / y1 for y1\{0} if 0 ∈ y1
+    [-∞, -2] ∪ [2, ∞]
+
+julia> sqrt(x)
+    [1.41421, 2.23607]
+
+julia> sqrt(x1)
+    [-2.23607, -1.41421] ∪ [1.41421, 2.23607]
+  ```
+  
+  
 ## Bibiography
 
 * Schichl, Hermann, et al. ["Interval unions."](https://link.springer.com/content/pdf/10.1007/s10543-016-0632-y.pdf) BIT Numerical Mathematics 57.2 (2017): 531-556.]
