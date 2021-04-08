@@ -49,10 +49,23 @@ function bisect( x :: IntervalU, α = 0)
 
 end
 
-function intersect(x :: IntervalU)
 
+function intersect(x :: IntervalU, y :: IntervalU)
+    intersects = [intersect(xv, yv) for xv in x.v, yv in y.v]
+    return intervalU(intersects[:])
 end
 
-function set_diff(x :: IntervalU)
+function intersect(x :: IntervalU, y :: Interval)
+    intersects = [intersect(xv, y) for xv in x.v]
+    return intervalU(intersects[:])
+end
 
+function intersect(x :: Interval, y :: IntervalU)
+    intersects = [intersect(x, yv) for yv in y.v]
+    return intervalU(intersects[:])
+end
+
+
+function setdiff(x :: IntervalU, y :: IntervalU)
+    
 end

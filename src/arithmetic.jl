@@ -2,7 +2,7 @@
 #   IntervalUnion Arithmetic
 ###
 
-# Special case for /
+# Special case for /. Probably better with promotion rules and convert
 for op in (:+, :-, :/, :*, :min, :max, :^, :log, :<, :>)
 
     if op != :/; @eval ($op)( x::IntervalU, y::IntervalU) = intervalU([$op(xv, yv) for xv in x.v, yv in y.v][:]); end
