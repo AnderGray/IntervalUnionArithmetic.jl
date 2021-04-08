@@ -39,12 +39,8 @@ julia> y = interval(-1,1);
 julia> x / y                # Standard interval arithmetic
     [-∞, ∞]
     
-julia> x1 = intervalU(x)
-    [2, 5]
-    
-julia> y1 = intervalU(y)
-    [-1, 1]
-    
+julia> x1 = intervalU(x);
+julia> y1 = intervalU(y);
 julia> x1 / y1              # Does x1 / y1 for y1\{0} if 0 ∈ y1
     [-∞, -2] ∪ [2, ∞]
 
