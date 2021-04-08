@@ -67,5 +67,10 @@ end
 
 
 function setdiff(x :: IntervalU, y :: IntervalU)
-    
+    yc = complement(y)
+    return intersect(x, yc)
 end
+
+\(x :: IntervalU, y :: IntervalU) = setdiff(x, y)
+\(x :: Interval, y :: IntervalU) = setdiff(intervalU(x), y)
+\(x :: IntervalU, y :: Interval) = setdiff(x, intervalU(y))
