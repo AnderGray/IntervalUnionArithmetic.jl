@@ -53,6 +53,11 @@ git-tree-sha1 = "b3fb709f3c97bfc6e948be68beeecb55a0b340ae"
 uuid = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
 version = "1.1.1"
 
+[[Reexport]]
+git-tree-sha1 = "57d8440b0c7d98fc4f889e478e80f268d534c9d5"
+uuid = "189a3867-3050-52da-a836-e630ba90ab69"
+version = "1.0.0"
+
 [[RoundingEmulator]]
 git-tree-sha1 = "40b9edad2e5287e05bd413a38f61a8ff55b9557b"
 uuid = "5eaf0fd0-dfba-4ccb-bf02-d820a40db705"
