@@ -26,9 +26,6 @@ julia> b = interval(1,2) ∪ interval(4,5) ∪ ∅
 
 julia> c = a * b 
     [0, 10] ∪ [12, 20]
-    
-julia> complement(c)
-    [-∞, 0] ∪ [10, 12] ∪ [20, ∞]
   ```
   
 ### Division and sqrt
@@ -50,8 +47,27 @@ julia> sqrt(x)
 julia> sqrt(x1)
     [-2.23607, -1.41421] ∪ [1.41421, 2.23607]
   ```
+### Set operations
   
-  
+  ```Julia
+julia> a = interval(0,1) ∪ interval(2,3)
+    [0, 1] ∪ [2, 3]
+
+julia> b = interval(-1,0.5) ∪ interval(2.5,5)
+    [-1, 0.5] ∪ [2.5, 5]
+
+julia> complement(a)         # complement
+    [-∞, 0] ∪ [1, 2] ∪ [3, ∞]
+
+julia> a ∩ b                 # Intersect
+    [0, 0.5] ∪ [2.5, 3]
+    
+julia> a \ b                 # Set difference
+    [0.5, 1] ∪ [2, 2.5]
+    
+julia> bisect(a,0.5)         # Cut at a = 0.5
+[0, 0.5] ∪ [0.5, 1] ∪ [2, 3]
+  ```
 ## Bibiography
 
 * Schichl, Hermann, et al. ["Interval unions."](https://link.springer.com/content/pdf/10.1007/s10543-016-0632-y.pdf) BIT Numerical Mathematics 57.2 (2017): 531-556.]
