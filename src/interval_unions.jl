@@ -37,6 +37,9 @@ function intervalU(x)
     x = remove_empties(x)
     return condense(x)
 end
+
+intervalU(num :: Real) = IntervalU([interval(num)])
+
 intervalU(lo :: Real, hi :: Real) = IntervalU([interval(lo,hi)])
 IntervalU(lo :: Real, hi :: Real) = IntervalU([interval(lo,hi)])
 
