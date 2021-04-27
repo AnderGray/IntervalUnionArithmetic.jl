@@ -1,6 +1,6 @@
 """
 
-    Interval unions sets of defined by unions of disjoint intervals. 
+    Interval unions sets of defined by unions of disjoint intervals.
     This file includes constructors, arithmetic (including intervals and scalars)
     and complement functions
 
@@ -12,9 +12,9 @@
     julia> b = interval(1,2) ∪ interval(4,5) ∪ ∅
     [1, 2] ∪ [4, 5]
 
-    julia> c = a * b 
+    julia> c = a * b
     [0, 10] ∪ [12, 20]
-    
+
     julia> complement(c)
     [-∞, 0] ∪ [10, 12] ∪ [20, ∞]
 
@@ -24,7 +24,7 @@
 ###
 #   IntervalUnion constructor. Consists of a vector of intervals
 ###
-struct IntervalU{T<:Real} <: IntervalUnion{T} 
+struct IntervalU{T<:Real} <: IntervalUnion{T}
     v :: Array{Interval{T}}
 end
 
@@ -32,10 +32,13 @@ end
 ###
 #   Outer constructors
 ###
-function intervalU(x) 
+function intervalU(x)
     x = IntervalU(x)
+    sort!(x.v)
     x = remove_empties(x)
-    return condense(x)
+    x = condense(x)
+    closeGaps!(x)
+    return x
 end
 
 intervalU(num :: Real) = IntervalU([interval(num)])
@@ -69,6 +72,29 @@ function remove_empties(x :: IntervalU)
     return IntervalU(Vnew)
 end
 
+function closeGaps!(x :: IntervalU, maxInts = MAXINTS[1])
+
+    while length(x.v) > maxInts     # Global
+
+        # Complement code
+        v = sort(x.v)
+        vLo = left.(v)
+        vHi = right.(v)
+        vLo[1] == -∞ ? popfirst!(vLo) : pushfirst!(vHi, -∞)
+        vHi[end] == ∞ ? pop!(vHi) : push!(vLo, ∞)
+        xc = interval.(vHi,vLo)
+
+        # Close smallest width of complement
+        widths = diam.(xc)
+        d, i = findmin(widths)
+        merge = hull(x[i-1], x[i])
+        popat!(x.v, i)
+        popat!(x.v, i-1)
+        push!(x.v, merge)
+        sort!(x.v)
+    end
+    return x
+end
 
 # Recursively envolpe intervals which intersect.
 function condense(x :: IntervalU)
@@ -131,7 +157,7 @@ function iscondensed_weak(x :: IntervalU)
         isItThin =  isthin.(intersects)
 
         notEmptyOrThin = notempty .* (1 .- isItThin)
-        
+
         if sum(notEmptyOrThin) != 0; return false; end
     end
     return true

@@ -16,7 +16,7 @@ function complement(x :: IntervalU)
 
     vLo[1] == -∞ ? popfirst!(vLo) : pushfirst!(vHi, -∞)
     vHi[end] == ∞ ? pop!(vHi) : push!(vLo, ∞)
-    
+
 
     complements = interval.(vHi,vLo)
 
@@ -86,7 +86,7 @@ function ⊂(x :: Interval, y :: IntervalU)
     return any(issubs)
 end
 
-function ⊂( x::IntervalU, y :: Interval) 
+function ⊂( x::IntervalU, y :: Interval)
     issubs = x.v .⊂ y
     return all(issubs)
 end
@@ -101,7 +101,7 @@ function ⊆(x :: Interval, y :: IntervalU)
     return any(issubs)
 end
 
-function ⊆( x::IntervalU, y :: Interval) 
+function ⊆( x::IntervalU, y :: Interval)
     issubs = x.v .⊆ y
     return all(issubs)
 end
