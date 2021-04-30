@@ -8,11 +8,11 @@ This package includes constructors, arithmetic (including with intervals and sca
 
 ## Installation
 
-This is not yet a registered julia package. However this package may be installed using the Julia package manager:
+This is a registered julia package:
 
 ```Julia
 julia> ]
-pkg> add https://github.com/AnderGray/IntervalUnionArithmetic.jl.git
+pkg> add IntervalUnionArithmetic.jl
 ```
 
 ## Example
