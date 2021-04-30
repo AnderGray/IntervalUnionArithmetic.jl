@@ -15,6 +15,13 @@ julia> ]
 pkg> add IntervalUnionArithmetic.jl
 ```
 
+or the most up to date version:
+
+```Julia
+julia> ]
+pkg> add https://github.com/AnderGray/IntervalUnionArithmetic.jl#master
+```
+
 ## Example
   
   ```Julia
