@@ -25,7 +25,7 @@
 #   IntervalUnion constructor. Consists of a vector of intervals
 ###
 struct IntervalU{T<:Real} <: IntervalUnion{T}
-    v :: Array{Interval{T}}
+    v :: Vector{Interval{T}}
 end
 
 
