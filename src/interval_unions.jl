@@ -24,7 +24,7 @@
 ###
 #   IntervalUnion constructor. Consists of a vector of intervals
 ###
-struct IntervalU{T<:Real} <: IntervalUnion{T}
+struct IntervalUnion{T<:Real} <: AbstractInterval{T}
     v :: Vector{Interval{T}}
 end
 
@@ -32,8 +32,8 @@ end
 ###
 #   Outer constructors
 ###
-function intervalU(x)
-    x = IntervalU(x)
+function intervalUnion(x)
+    x = IntervalUnion(x)
     sort!(x.v)
     x = remove_empties(x)
     x = condense(x)
@@ -41,38 +41,38 @@ function intervalU(x)
     return x
 end
 
-intervalU(num :: Real) = IntervalU([interval(num)])
+intervalUnion(num :: Real) = IntervalUnion([interval(num)])
 
-intervalU(lo :: Real, hi :: Real) = IntervalU([interval(lo,hi)])
-IntervalU(lo :: Real, hi :: Real) = IntervalU([interval(lo,hi)])
+intervalUnion(lo :: Real, hi :: Real) = IntervalUnion([interval(lo,hi)])
+IntervalUnion(lo :: Real, hi :: Real) = IntervalUnion([interval(lo,hi)])
 
-intervalU(x :: Interval) = IntervalU([x])
-∪(x :: Interval) = intervalU(x)
+intervalUnion(x :: Interval) = IntervalUnion([x])
+∪(x :: Interval) = intervalUnion(x)
 
-∪(x :: Interval, y :: Interval) = intervalU([x; y])
-∪(x :: Array{Interval{T}}) where T <:Real = intervalU(x)
+∪(x :: Interval, y :: Interval) = intervalUnion([x; y])
+∪(x :: Array{Interval{T}}) where T <:Real = intervalUnion(x)
 
-intervalU(x :: Interval, y :: IntervalU) = intervalU([x; y.v])
-∪(x :: Interval, y :: IntervalU) = intervalU(x,y)
+intervalUnion(x :: Interval, y :: IntervalUnion) = intervalUnion([x; y.v])
+∪(x :: Interval, y :: IntervalUnion) = intervalUnion(x,y)
 
-intervalU(x :: IntervalU, y :: Interval) = intervalU([x.v; y])
-∪(x :: IntervalU, y :: Interval) = intervalU(x,y)
+intervalUnion(x :: IntervalUnion, y :: Interval) = intervalUnion([x.v; y])
+∪(x :: IntervalUnion, y :: Interval) = intervalUnion(x,y)
 
-intervalM(x :: IntervalU, y :: IntervalU) = intervalU([x.v; y.v])
-∪(x :: IntervalU, y :: IntervalU) = intervalU(x,y)
+intervalUnion(x :: IntervalUnion, y :: IntervalUnion) = intervalUnion([x.v; y.v])
+∪(x :: IntervalUnion, y :: IntervalUnion) = intervalUnion(x,y)
 
 # MultiInterval can act like a vector
-getindex(x :: IntervalU, ind :: Integer) = getindex(x.v,ind)
-getindex(x :: IntervalU, ind :: Array{ <: Integer}) = getindex(x.v,ind)
+getindex(x :: IntervalUnion, ind :: Integer) = getindex(x.v,ind)
+getindex(x :: IntervalUnion, ind :: Array{ <: Integer}) = getindex(x.v,ind)
 
 # Remove ∅ from IntervalUnion
-function remove_empties(x :: IntervalU)
+function remove_empties(x :: IntervalUnion)
     v = x.v
     Vnew = v[v .!= ∅]
-    return IntervalU(Vnew)
+    return IntervalUnion(Vnew)
 end
 
-function closeGaps!(x :: IntervalU, maxInts = MAXINTS[1])
+function closeGaps!(x :: IntervalUnion, maxInts = MAXINTS[1])
 
     while length(x.v) > maxInts     # Global
 
@@ -97,7 +97,7 @@ function closeGaps!(x :: IntervalU, maxInts = MAXINTS[1])
 end
 
 # Recursively envolpe intervals which intersect.
-function condense(x :: IntervalU)
+function condense(x :: IntervalUnion)
 
     if iscondensed(x); return x; end
 
@@ -112,10 +112,10 @@ function condense(x :: IntervalU)
 
         push!(Vnew, hull(v[these]))
     end
-    return condense( intervalU(Vnew) )
+    return condense( intervalUnion(Vnew) )
 end
 
-function iscondensed(x :: IntervalU)
+function iscondensed(x :: IntervalUnion)
     v = sort(x.v)
     for i=1:length(v)
         intersects = findall( intersect.(v[i],v[1:end .!= i]) .!= ∅)
@@ -125,7 +125,7 @@ function iscondensed(x :: IntervalU)
 end
 
 # Recursively envolpe intervals which intersect, except those which touch
-function condense_weak(x :: IntervalU)
+function condense_weak(x :: IntervalUnion)
 
     if iscondensed(x); return x; end
 
@@ -145,10 +145,10 @@ function condense_weak(x :: IntervalU)
 
         push!(Vnew, hull(v[them]))
     end
-    return condense( intervalU(Vnew) )
+    return condense( intervalUnion(Vnew) )
 end
 
-function iscondensed_weak(x :: IntervalU)
+function iscondensed_weak(x :: IntervalUnion)
     v = sort(x.v)
     for i=1:length(v)
         intersects = intersect.(v[i],v[1:end .!= i])
