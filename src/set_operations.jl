@@ -52,16 +52,19 @@ end
 
 function intersect(x :: IntervalUnion, y :: IntervalUnion)
     intersects = [intersect(xv, yv) for xv in x.v, yv in y.v]
+    if all(intersects .== ∅); return  ∅; end
     return intervalUnion(intersects[:])
 end
 
 function intersect(x :: IntervalUnion, y :: Interval)
     intersects = [intersect(xv, y) for xv in x.v]
+    if all(intersects .== ∅); return  ∅; end
     return intervalUnion(intersects[:])
 end
 
 function intersect(x :: Interval, y :: IntervalUnion)
     intersects = [intersect(x, yv) for yv in y.v]
+    if all(intersects .== ∅); return  ∅; end
     return intervalUnion(intersects[:])
 end
 
