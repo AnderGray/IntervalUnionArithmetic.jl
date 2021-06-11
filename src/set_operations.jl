@@ -3,12 +3,12 @@
 ###
 
 # Envolpe/hull. Keeps it as a IntervalUnion
-env(x :: IntervalU) = IntervalU([hull(x.v)])
-hull(x :: IntervalU) = IntervalU([hull(x.v)])
+env(x :: IntervalUnion) = IntervalUnion([hull(x.v)])
+hull(x :: IntervalUnion) = IntervalUnion([hull(x.v)])
 
 
 # Computes the complement of a IntervalUnion
-function complement(x :: IntervalU)
+function complement(x :: IntervalUnion)
 
     v = sort(x.v)
     vLo = left.(v)
@@ -20,14 +20,14 @@ function complement(x :: IntervalU)
 
     complements = interval.(vHi,vLo)
 
-    return intervalU(complements)
+    return intervalUnion(complements)
 end
 
-complement(x :: Interval) = complement(intervalU(x))
+complement(x :: Interval) = complement(intervalUnion(x))
 
 
 # bisect x at α
-function bisect( x :: IntervalU, α = 0)
+function bisect( x :: IntervalUnion, α = 0)
 
     v = deepcopy(x.v)
 
@@ -42,7 +42,7 @@ function bisect( x :: IntervalU, α = 0)
 
     bs = bisect(this, β)
 
-    new = IntervalU(v ∪ bs[1] ∪ bs[2])
+    new = IntervalUnion(v ∪ bs[1] ∪ bs[2])
     new = remove_empties(new)
     sort!(new.v)
     return new
@@ -50,61 +50,61 @@ function bisect( x :: IntervalU, α = 0)
 end
 
 
-function intersect(x :: IntervalU, y :: IntervalU)
+function intersect(x :: IntervalUnion, y :: IntervalUnion)
     intersects = [intersect(xv, yv) for xv in x.v, yv in y.v]
-    if all(intersects .== ∅); return interval(∅); end
-    return intervalU(intersects[:])
+    if all(intersects .== ∅); return  ∅; end
+    return intervalUnion(intersects[:])
 end
 
-function intersect(x :: IntervalU, y :: Interval)
+function intersect(x :: IntervalUnion, y :: Interval)
     intersects = [intersect(xv, y) for xv in x.v]
-    if all(intersects .== ∅); return interval(∅); end
-    return intervalU(intersects[:])
+    if all(intersects .== ∅); return  ∅; end
+    return intervalUnion(intersects[:])
 end
 
-function intersect(x :: Interval, y :: IntervalU)
+function intersect(x :: Interval, y :: IntervalUnion)
     intersects = [intersect(x, yv) for yv in y.v]
-    if all(intersects .== ∅); return interval(∅); end
-    return intervalU(intersects[:])
+    if all(intersects .== ∅); return  ∅; end
+    return intervalUnion(intersects[:])
 end
 
 
-function setdiff(x :: IntervalU, y :: IntervalU)
+function setdiff(x :: IntervalUnion, y :: IntervalUnion)
     yc = complement(y)
     return intersect(x, yc)
 end
 
-\(x :: IntervalU, y :: IntervalU) = setdiff(x, y)
-\(x :: Interval, y :: IntervalU) = setdiff(intervalU(x), y)
-\(x :: IntervalU, y :: Interval) = setdiff(x, intervalU(y))
+\(x :: IntervalUnion, y :: IntervalUnion) = setdiff(x, y)
+\(x :: Interval, y :: IntervalUnion) = setdiff(intervalUnion(x), y)
+\(x :: IntervalUnion, y :: IntervalUnion) = setdiff(x, intervalUnion(y))
 
-function ⊂(x :: IntervalU, y :: IntervalU)
+function ⊂(x :: IntervalUnion, y :: IntervalUnion)
     issubs = [xv .⊂ y.v for xv in x.v]
     return all(any.(issubs))
 end
 
-function ⊂(x :: Interval, y :: IntervalU)
+function ⊂(x :: Interval, y :: IntervalUnion)
     if length(y.v) == 1; return x ⊂ y; end
     issubs = x .⊆ y.v
     return any(issubs)
 end
 
-function ⊂( x::IntervalU, y :: Interval)
+function ⊂( x::IntervalUnion, y :: Interval)
     issubs = x.v .⊂ y
     return all(issubs)
 end
 
-function ⊆(x :: IntervalU, y :: IntervalU)
+function ⊆(x :: IntervalUnion, y :: IntervalUnion)
     issubs = [xv .⊆ y.v for xv in x.v]
     return all(any.(issubs))
 end
 
-function ⊆(x :: Interval, y :: IntervalU)
+function ⊆(x :: Interval, y :: IntervalUnion)
     issubs = x .⊆ y.v
     return any(issubs)
 end
 
-function ⊆( x::IntervalU, y :: Interval)
+function ⊆( x::IntervalUnion, y :: Interval)
     issubs = x.v .⊆ y
     return all(issubs)
 end

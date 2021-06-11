@@ -6,12 +6,10 @@ using Reexport
 
 import Base: getindex, ∪, intersect, \, in, isequal
 import Base: +, -, *, /, min, max, ^, log, <, >, exp, sin, cos, tan, sqrt
-import IntervalArithmetic: hull, bisect, intersect, ⊆, ⊂
-
-abstract type IntervalUnion{T} <: AbstractInterval{T} end
+import IntervalArithmetic: union, ∪, hull, bisect, intersect, ⊆, ⊂
 
 export
-    IntervalUnion, IntervalU, intervalU, remove_empties, condense, closeGaps!,
+    IntervalUnion, intervalUnion, remove_empties, condense, closeGaps!,
     iscondensed, condense_weak, iscondensed_weak, env, hull, complement, left, right, bisect,
     intersect, setdiff, \, ⊆, ⊂, isequal, in
 
