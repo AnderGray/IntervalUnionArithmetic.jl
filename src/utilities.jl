@@ -21,6 +21,10 @@ end
 
 
 function Base.show(io::IO, this::IntervalUnion)
-    v = sort(this.v)
-    print(io, join(v, " ∪ "));
+    if length(this.v) == 1;
+        print(io, "$(this.v[1])ᵤ");
+    else
+        v = sort(this.v)
+        print(io, join(v, " ∪ "));
+    end
 end
