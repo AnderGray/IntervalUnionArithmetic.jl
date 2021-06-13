@@ -1,6 +1,6 @@
 # IntervalUnionArithmetic.jl
 
-An extension to [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl) with interval unions. Interval unions sets of defined by unions of disjoint intervals.
+An extension to [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl) with interval unions. Interval unions are sets defined by unions of disjoint intervals.
 
 Conversation in [PR#452](https://github.com/JuliaIntervals/IntervalArithmetic.jl/pull/452)
 
