@@ -9,6 +9,7 @@
 
     aSamps = zeros(Nsamps); bSamps = zeros(Nsamps)
 
+    # Sample inside set
     for i = 1: Nsamps
         if rand() < 0.5
             aSamps[i] = rand() * 2
@@ -46,5 +47,38 @@
 
     end
 
+
+    # With 0 ∈ b
+
+    a = interval(0,2) ∪ interval(3,4)
+    b = interval(-5,5) ∪ interval(20, 25)
+
+    for i = 1: Nsamps
+        if rand() < 0.5
+            aSamps[i] = rand() * 2
+        else
+            aSamps[i] = rand() + 3
+        end
+
+        if rand() < 0.5
+            bSamps[i] = (rand() * 5) + 20
+        else
+            bSamps[i] = rand() * 10  - 5
+        end
+    end
+
+
+    @test all(aSamps .∈ a)
+    @test all(bSamps .∈ b)
+
+    BivOps = [+, -, *, / , min, max] # Error with /
+
+    for op in BivOps
+
+        cInt = op(a, b)
+        cSamps = op.(aSamps, bSamps)
+        @test all( cSamps .∈ cInt)
+
+    end
 
 end
