@@ -108,3 +108,10 @@ function ⊆( x::IntervalUnion, y :: Interval)
     issubs = x.v .⊆ y
     return all(issubs)
 end
+
+function in(x :: Real, y :: IntervalUnion)
+    for i = 1:length(y.v)
+        if x ∈ y.v[i]; return true; end
+    end
+    return false
+end
