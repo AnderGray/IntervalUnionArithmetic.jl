@@ -1,4 +1,6 @@
 # IntervalUnionArithmetic.jl
+![Build Status](https://github.com/AnderGray/IntervalUnionArithmetic.jl/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/AnderGray/IntervalUnionArithmetic.jl/branch/main/graph/badge.svg?token=L2ALPNLUEU)](https://codecov.io/gh/AnderGray/IntervalUnionArithmetic.jl)
 
 An extension to [IntervalArithmetic.jl](https://github.com/JuliaIntervals/IntervalArithmetic.jl) with interval unions. Interval unions are sets defined by unions of disjoint intervals.
 
