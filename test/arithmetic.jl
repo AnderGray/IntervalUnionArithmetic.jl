@@ -26,7 +26,7 @@
     @test all(aSamps .∈ a)
     @test all(bSamps .∈ b)
 
-    BivOps = [+, -, *, min, max, ^] # Error with /
+    BivOps = [+, -, *, / , min, max, ^] # Error with /
     UniOps = [-, sin, cos, tan, exp, log, sqrt]
 
     for op in BivOps

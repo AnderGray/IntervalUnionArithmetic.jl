@@ -23,7 +23,7 @@ end
 # Does x/y for y\{0} if 0 ∈ y
 function /(x :: IntervalUnion, y :: IntervalUnion)
     yNew = bisect(y, 0)
-    return intervalUnion(broadcast(/, x.v, yNew.v))
+    return intervalUnion([xv / yv for xv in x.v, yv in yNew.v][:])
 end
 
 function /(x :: Interval, y :: IntervalUnion)
