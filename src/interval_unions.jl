@@ -44,7 +44,6 @@ end
 intervalUnion(num :: Real) = IntervalUnion([interval(num)])
 
 intervalUnion(lo :: Real, hi :: Real) = IntervalUnion([interval(lo,hi)])
-IntervalUnion(lo :: Real, hi :: Real) = IntervalUnion([interval(lo,hi)])
 
 intervalUnion(x :: Interval) = IntervalUnion([x])
 ∪(x :: Interval) = intervalUnion(x)
