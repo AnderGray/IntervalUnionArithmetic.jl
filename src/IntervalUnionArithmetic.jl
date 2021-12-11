@@ -6,7 +6,7 @@ using Reexport
 
 import Base: getindex, ∪, intersect, \, in, isequal
 import Base: +, -, *, /, min, max, ^, log, <, >, exp, sin, cos, tan, sqrt
-import IntervalArithmetic: union, ∪, hull, bisect, intersect, ⊆, ⊂
+import IntervalArithmetic: union, ∪, hull, bisect, intersect, ⊆, ⊂, setdiff
 
 export
     IntervalUnion, intervalUnion, remove_empties, condense, closeGaps!,

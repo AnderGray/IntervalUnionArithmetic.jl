@@ -76,7 +76,7 @@ end
 
 \(x :: IntervalUnion, y :: IntervalUnion) = setdiff(x, y)
 \(x :: Interval, y :: IntervalUnion) = setdiff(intervalUnion(x), y)
-\(x :: IntervalUnion, y :: IntervalUnion) = setdiff(x, intervalUnion(y))
+\(x :: IntervalUnion, y :: Interval) = setdiff(x, intervalUnion(y))
 
 function ⊂(x :: IntervalUnion, y :: IntervalUnion)
     issubs = [xv .⊂ y.v for xv in x.v]
