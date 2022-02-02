@@ -115,3 +115,28 @@ function in(x :: Real, y :: IntervalUnion)
     end
     return false
 end
+
+function ==(x :: IntervalUnion, y ::IntervalUnion)
+
+    xv = sort(x.v);
+    yv = sort(y.v);
+
+    return all(xv .== yv)
+
+end
+
+function ==(x :: IntervalUnion, y :: Interval)
+    if length(x.v) == 1
+        return x.v[1] == y
+    end
+    return false
+end
+
+==(x :: Interval, y :: IntervalUnion) = y == x
+
+function isempty(x::IntervalUnion)
+    if length(x.v) == 1
+        return isempty(x.v[1])
+    end
+    return false
+end
