@@ -49,6 +49,14 @@ using Test
     @test length(d2.v) == 1
     @test d2.v[1] == interval(1, 3)
 
+    # Comparisons
+    @test intervalUnion(1,2) == Interval(1,2) ∪ ∅
+    @test !(intervalUnion(1,2) == ∅)
+    @test intervalUnion(1,2) == Interval(1,2)
+    @test isempty(intervalUnion(∅))
+
+    @test intervalUnion(∅) == intervalUnion(∅) ∪ ∅
+
 end
 
 @testset "close gaps" begin

@@ -4,14 +4,14 @@ using Reexport
 
 @reexport using IntervalArithmetic
 
-import Base: getindex, ∪, intersect, \, in, isequal
-import Base: +, -, *, /, min, max, ^, log, <, >, exp, sin, cos, tan, sqrt
+import Base: getindex, ∪, intersect, \, in, isequal, isempty
+import Base: +, -, *, /, min, max, ^, log, <, >, exp, sin, cos, tan, sqrt, ==
 import IntervalArithmetic: union, ∪, hull, bisect, intersect, ⊆, ⊂, setdiff
 
 export
     IntervalUnion, intervalUnion, remove_empties, condense, closeGaps!,
     iscondensed, condense_weak, iscondensed_weak, env, hull, complement, left, right, bisect,
-    intersect, setdiff, \, ⊆, ⊂, isequal, in
+    intersect, setdiff, \, ⊆, ⊂, isequal, in, ==, isempty
 
 
 global MAXINTS = [100]
