@@ -4,7 +4,7 @@ using Reexport
 
 @reexport using IntervalArithmetic
 
-import Base: getindex, ∪, intersect, \, in, isequal
+import Base: getindex, ∪, intersect, \, in, isequal, isempty
 import Base: +, -, *, /, min, max, ^, log, <, >, exp, sin, cos, tan, sqrt, ==
 import IntervalArithmetic: union, ∪, hull, bisect, intersect, ⊆, ⊂, setdiff
 
