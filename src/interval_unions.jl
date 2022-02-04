@@ -32,11 +32,11 @@ end
 ###
 #   Outer constructors
 ###
-function intervalUnion(x)
-    x = IntervalUnion(x)
+function intervalUnion(v)
+    x = IntervalUnion(v)
     sort!(x.v)
-    x = remove_empties(x)
-    x = condense(x)
+    remove_empties!(x)
+    condense!(x)
     closeGaps!(x)
     return x
 end
@@ -45,7 +45,7 @@ intervalUnion(num :: Real) = IntervalUnion([interval(num)])
 
 intervalUnion(lo :: Real, hi :: Real) = IntervalUnion([interval(lo,hi)])
 
-intervalUnion(x :: Interval) = IntervalUnion([x])
+intervalUnion(x :: Interval) = intervalUnion([x])
 ∪(x :: Interval) = intervalUnion(x)
 
 ∪(x :: Interval, y :: Interval) = intervalUnion([x; y])
@@ -65,14 +65,9 @@ getindex(x :: IntervalUnion, ind :: Integer) = getindex(x.v,ind)
 getindex(x :: IntervalUnion, ind :: Array{ <: Integer}) = getindex(x.v,ind)
 
 # Remove ∅ from IntervalUnion
-function remove_empties(x :: IntervalUnion)
-
-    v = x.v
-
-    if all(isempty.(v)); return intervalUnion(∅); end
-
-    Vnew = v[v .!= ∅]
-    return IntervalUnion(Vnew)
+function remove_empties!(x :: IntervalUnion)
+    deleteat!(x.v, [i for i in eachindex(x.v) if isempty(x.v[i])])
+    x
 end
 
 function closeGaps!(x :: IntervalUnion, maxInts = MAXINTS[1])
@@ -99,69 +94,31 @@ function closeGaps!(x :: IntervalUnion, maxInts = MAXINTS[1])
     return x
 end
 
-# Recursively envolpe intervals which intersect.
-function condense(x :: IntervalUnion)
-
-    if iscondensed(x); return x; end
-
-    v = sort(x.v)
-    v = unique(v)
-
-    Vnew = Interval{Float64}[]
-    for i =1:length(v)
-
-        intersects = intersect.(v[i],v )
-        these = findall( intersects .!= ∅)
-
-        push!(Vnew, hull(v[these]))
+function condense!(f::Function, x :: IntervalUnion)
+    v = x.v
+    sort!(v)
+    i = 1
+    while i < length(v)
+        these = (i - 1) .+ findall(!f(v[i] ∩ v[j]) for j in i:length(v))
+        if length(these) > 1
+            v[i] = hull(v[these])
+            deleteat!(v, @view(these[2:end]))
+        end
+        i += 1
     end
-    return condense( intervalUnion(Vnew) )
+    return x
 end
 
-function iscondensed(x :: IntervalUnion)
-    v = sort(x.v)
-    for i=1:length(v)
-        intersects = findall( intersect.(v[i],v[1:end .!= i]) .!= ∅)
-        if !isempty(intersects); return false; end
-    end
-    return true
-end
+condense(f, x) = condense!(f, copy(x))
 
-# Recursively envolpe intervals which intersect, except those which touch
-function condense_weak(x :: IntervalUnion)
+# join intervals that intersect.
+condense!(x::IntervalUnion) = condense!(isempty, x)
+# join intervals that intersect.
+condense(x::IntervalUnion) = condense(isempty, x)
+# Join intervals which intersect in more than one point
+condense_weak(x::IntervalUnion) = condense(i->isempty(i) || isthin(i), x)
 
-    if iscondensed(x); return x; end
+iscondensed(f::Function, x :: IntervalUnion) = all(f(intersect(x.v[i], x.v[j])) for i in eachindex(x.v) for j in 1:i-1)
 
-    v = sort(x.v)
-    v = unique(v)
-
-    Vnew = Interval{Float64}[]
-    for i =1:length(v)
-
-        intersects = intersect.(v[i],v )
-
-        notempty = intersects .!= ∅
-        isItThin = isthin.(intersects)    # Don't hull intervals which touch
-
-        notEmptyOrThin = notempty .* (1 .- isItThin)
-        them = findall(notEmptyOrThin .== 1)
-
-        push!(Vnew, hull(v[them]))
-    end
-    return condense( intervalUnion(Vnew) )
-end
-
-function iscondensed_weak(x :: IntervalUnion)
-    v = sort(x.v)
-    for i=1:length(v)
-        intersects = intersect.(v[i],v[1:end .!= i])
-
-        notempty = intersects .!= ∅
-        isItThin =  isthin.(intersects)
-
-        notEmptyOrThin = notempty .* (1 .- isItThin)
-
-        if sum(notEmptyOrThin) != 0; return false; end
-    end
-    return true
-end
+iscondensed(x::IntervalUnion) = iscondensed(isempty, x)
+iscondensed_weak(x::IntervalUnion) = iscondensed(i->isempty(i) || isthin(i), x)
