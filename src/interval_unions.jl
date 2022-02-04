@@ -99,7 +99,7 @@ function condense!(f::Function, x :: IntervalUnion)
     sort!(v)
     i = 1
     while i < length(v)
-        these = (i - 1) .+ findall(!f(v[i] ∩ v[j]) for j in i:length(v))
+        these = (i - 1) .+ collect(findall(!f(v[i] ∩ v[j]) for j in i:length(v)))
         if length(these) > 1
             v[i] = hull(v[these])
             deleteat!(v, @view(these[2:end]))
