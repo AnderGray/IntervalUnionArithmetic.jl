@@ -66,7 +66,7 @@ getindex(x :: IntervalUnion, ind :: Array{ <: Integer}) = getindex(x.v,ind)
 
 # Remove ∅ from IntervalUnion
 function remove_empties!(x :: IntervalUnion)
-    deleteat!(x.v, [i for i in eachindex(x.v) if isempty(x.v[i])])
+    deleteat!(x.v, (i for i in eachindex(x.v) if isempty(x.v[i])))
     x
 end
 

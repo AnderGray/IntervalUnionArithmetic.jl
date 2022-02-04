@@ -134,9 +134,4 @@ end
 
 ==(x :: Interval, y :: IntervalUnion) = y == x
 
-function isempty(x::IntervalUnion)
-    if length(x.v) == 1
-        return isempty(x.v[1])
-    end
-    return false
-end
+isempty(x::IntervalUnion) = isempty(x.v)
