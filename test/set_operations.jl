@@ -3,24 +3,10 @@
     Nsamps = 10^6
 
     a = interval(0,1) ∪ interval(2,3)
-
     b = interval(-1, 1) ∪ interval(2,5)
 
-    aSamps = zeros(Nsamps); bSamps = zeros(Nsamps)
-
-    for i = 1: Nsamps
-        if rand() < 0.5
-            aSamps[i] = rand()
-        else
-            aSamps[i] = rand() + 2
-        end
-
-        if rand() < 0.5
-            bSamps[i] = (rand() * 2) -1
-        else
-            bSamps[i] = rand() * 3 + 2
-        end
-    end
+    aSamps = [rand(rand(a.v)) for i=1:Nsamps]
+    bSamps = [rand(rand(b.v)) for i=1:Nsamps]
 
     @test all(aSamps .∈ a)
     @test all(bSamps .∈ b)
