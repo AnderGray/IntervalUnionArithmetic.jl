@@ -21,7 +21,9 @@ end
 
 
 function Base.show(io::IO, this::IntervalUnion)
-    if length(this.v) == 1;
+    if length(this.v) == 0
+        print(io, "∅ᵤ")
+    elseif length(this.v) == 1;
         print(io, "$(this.v[1])ᵤ");
     else
         v = sort(this.v)

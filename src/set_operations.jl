@@ -43,7 +43,7 @@ function bisect( x :: IntervalUnion, α = 0)
     bs = bisect(this, β)
 
     new = IntervalUnion(v ∪ bs[1] ∪ bs[2])
-    new = remove_empties(new)
+    remove_empties!(new)
     sort!(new.v)
     return new
 
@@ -134,9 +134,4 @@ end
 
 ==(x :: Interval, y :: IntervalUnion) = y == x
 
-function isempty(x::IntervalUnion)
-    if length(x.v) == 1
-        return isempty(x.v[1])
-    end
-    return false
-end
+isempty(x::IntervalUnion) = isempty(x.v)
