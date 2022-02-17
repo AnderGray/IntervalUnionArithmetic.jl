@@ -7,22 +7,9 @@
     a = interval(0,2) ∪ interval(3,4)
     b = interval(-10,-9) ∪ interval(20, 25)
 
-    aSamps = zeros(Nsamps); bSamps = zeros(Nsamps)
-
     # Sample inside set
-    for i = 1: Nsamps
-        if rand() < 0.5
-            aSamps[i] = rand() * 2
-        else
-            aSamps[i] = rand() + 3
-        end
-
-        if rand() < 0.5
-            bSamps[i] = (rand() * 5) + 20
-        else
-            bSamps[i] = rand() - 10
-        end
-    end
+    aSamps = [rand(rand(a.v)) for i=1:Nsamps]
+    bSamps = [rand(rand(b.v)) for i=1:Nsamps]
 
     @test all(aSamps .∈ a)
     @test all(bSamps .∈ b)
@@ -31,20 +18,15 @@
     UniOps = [-, sin, cos, tan, exp, log, sqrt]
 
     for op in BivOps
-
         cInt = op(a, b)
         cSamps = op.(aSamps, bSamps)
-        @test all( cSamps .∈ cInt)
-
+        @test all(cSamps .∈ cInt)
     end
 
-
     for op in UniOps
-
         cInt = op(a)
         cSamps = op.(aSamps)
-        @test all( cSamps .∈ cInt)
-
+        @test all(cSamps .∈ cInt)
     end
 
 
@@ -53,20 +35,8 @@
     a = interval(0,2) ∪ interval(3,4)
     b = interval(-5,5) ∪ interval(20, 25)
 
-    for i = 1: Nsamps
-        if rand() < 0.5
-            aSamps[i] = rand() * 2
-        else
-            aSamps[i] = rand() + 3
-        end
-
-        if rand() < 0.5
-            bSamps[i] = (rand() * 5) + 20
-        else
-            bSamps[i] = rand() * 10  - 5
-        end
-    end
-
+    aSamps = [rand(rand(a.v)) for i=1:Nsamps]
+    bSamps = [rand(rand(b.v)) for i=1:Nsamps]
 
     @test all(aSamps .∈ a)
     @test all(bSamps .∈ b)
