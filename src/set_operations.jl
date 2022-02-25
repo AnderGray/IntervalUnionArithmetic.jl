@@ -10,7 +10,7 @@ hull(x :: IntervalUnion) = IntervalUnion([hull(x.v)])
 # Computes the complement of a IntervalUnion
 function complement(x :: IntervalUnion)
 
-    v = sort(x.v)
+    v = sort(x.v, by = left)
     vLo = left.(v)
     vHi = right.(v)
 
@@ -44,30 +44,23 @@ function bisect( x :: IntervalUnion, α = 0)
 
     new = IntervalUnion(v ∪ bs[1] ∪ bs[2])
     remove_empties!(new)
-    sort!(new.v)
+    sort!(new.v, by = left)
     return new
 
 end
 
 
 function intersect(x :: IntervalUnion, y :: IntervalUnion)
-    intersects = [intersect(xv, yv) for xv in x.v, yv in y.v]
-    if all(intersects .== ∅); return  ∅; end
-    return intervalUnion(intersects[:])
+    intersects = (intersect(xv, yv) for xv in x.v, yv in y.v)
+    return intervalUnion([x for x in intersects if !isempty(x)])
 end
 
 function intersect(x :: IntervalUnion, y :: Interval)
-    intersects = [intersect(xv, y) for xv in x.v]
-    if all(intersects .== ∅); return  ∅; end
-    return intervalUnion(intersects[:])
+    intersects = (intersect(xv, y) for xv in x.v)
+    return intervalUnion([x for x in intersects if !isempty(x)])
 end
 
-function intersect(x :: Interval, y :: IntervalUnion)
-    intersects = [intersect(x, yv) for yv in y.v]
-    if all(intersects .== ∅); return  ∅; end
-    return intervalUnion(intersects[:])
-end
-
+intersect(x :: Interval, y :: IntervalUnion) = intersect(y, x)
 
 function setdiff(x :: IntervalUnion, y :: IntervalUnion)
     yc = complement(y)
@@ -118,8 +111,8 @@ end
 
 function ==(x :: IntervalUnion, y ::IntervalUnion)
 
-    xv = sort(x.v);
-    yv = sort(y.v);
+    xv = sort(x.v; by = left);
+    yv = sort(y.v; by = left);
 
     return all(xv .== yv)
 
