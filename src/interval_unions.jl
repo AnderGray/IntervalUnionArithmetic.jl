@@ -34,7 +34,7 @@ end
 ###
 function intervalUnion(v)
     x = IntervalUnion(v)
-    sort!(x.v)
+    sort!(x.v; by = left)
     remove_empties!(x)
     condense!(x)
     closeGaps!(x)
@@ -75,7 +75,7 @@ function closeGaps!(x :: IntervalUnion, maxInts = MAXINTS[1])
     while length(x.v) > maxInts     # Global
 
         # Complement code
-        v = sort(x.v)
+        v = sort(x.v; by = left)
         vLo = left.(v)
         vHi = right.(v)
         vLo[1] == -∞ ? popfirst!(vLo) : pushfirst!(vHi, -∞)
@@ -89,14 +89,14 @@ function closeGaps!(x :: IntervalUnion, maxInts = MAXINTS[1])
         popat!(x.v, i)
         popat!(x.v, i-1)
         push!(x.v, merge)
-        sort!(x.v)
+        sort!(x.v; by = left)
     end
     return x
 end
 
 function condense!(f::Function, x :: IntervalUnion)
     v = x.v
-    sort!(v)
+    sort!(v; by = left)
     i = 1
     while i < length(v)
         these = (i - 1) .+ findall(collect(!f(v[i] ∩ v[j]) for j in i:length(v)))
